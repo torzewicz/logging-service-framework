@@ -1,6 +1,5 @@
 package com.io.requests.component;
 
-import com.google.gson.Gson;
 import com.io.requests.model.LogData;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.core.env.Environment;
@@ -19,6 +18,7 @@ public class RequestInterceptor extends HandlerInterceptorAdapter implements Env
     private RestTemplate restTemplate;
     private String appName;
     private String baseUrl;
+    private Integer maxRpm;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -38,11 +38,12 @@ public class RequestInterceptor extends HandlerInterceptorAdapter implements Env
                 LogData logData = LogData.builder()
                         .requestId(request.getAttribute("requestId").toString())
                         .method(request.getMethod())
-                        .requestURI(request.getRequestURI())
+                        .path(request.getRequestURI())
                         .appName(appName != null ? appName : "Default App")
-                        .requestTimestamp(startTime)
-                        .time(System.currentTimeMillis() - startTime)
+                        .timestamp(startTime)
+                        .elapsedTime(System.currentTimeMillis() - startTime)
                         .statusCode(response.getStatus())
+                        .maxRpm(this.maxRpm)
                         .build();
 
                 restTemplate.postForEntity(baseUrl, logData, null);
@@ -62,6 +63,7 @@ public class RequestInterceptor extends HandlerInterceptorAdapter implements Env
         this.environment = environment;
         this.appName = environment.getProperty("log.appName");
         this.baseUrl = environment.getProperty("log.baseUrl");
+        this.maxRpm = Integer.valueOf(environment.getProperty("log.maxRpm") != null ? environment.getProperty("log.maxRpm") : "-1");
 
         if (baseUrl == null) {
             System.out.println("Log base Url not set - logs will not be published");

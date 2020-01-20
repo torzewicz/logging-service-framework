@@ -70,8 +70,8 @@ public class RequestInterceptorTest {
         verify(restTemplate, times(1)).postForEntity(eq("123"), responseLogData.capture(), eq(null));
         assertThat(responseLogData.getValue().getAppName()).isEqualTo("test");
         assertThat(responseLogData.getValue().getMethod()).isEqualTo("GET");
-        assertThat(responseLogData.getValue().getRequestURI()).isEqualTo("URI");
-        assertThat(responseLogData.getValue().getRequestTimestamp()).isGreaterThan(0);
+        assertThat(responseLogData.getValue().getPath()).isEqualTo("URI");
+        assertThat(responseLogData.getValue().getTimestamp()).isGreaterThan(0);
         assertThat(responseLogData.getValue().getRequestId()).isEqualTo(requestId);
     }
 

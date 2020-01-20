@@ -11,11 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LogData {
 
-    private String requestId;
-    private String method;
-    private String requestURI;
     private String appName;
-    private long requestTimestamp;
-    private long time;
+    private long timestamp;
+    private String method;
+    private long elapsedTime;
+    private String path;
     private int statusCode;
+    private int maxRpm;
+    private String requestId;
 }
